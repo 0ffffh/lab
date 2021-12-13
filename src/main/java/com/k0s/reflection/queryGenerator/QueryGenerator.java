@@ -67,17 +67,21 @@ public class QueryGenerator {
         return result.toString();
     }
 
-    public String getById(Class<?> clazz, int id){
+//    public String getById(Class<?> clazz, int id){
+    public String getById(Class<?> clazz, Object id){
 
-        String tableName = getTable(clazz);
+
+    String tableName = getTable(clazz);
         String colName;
+        String idName = "";
 
         StringJoiner result = new StringJoiner(", ");
 
         for(Field field : clazz.getDeclaredFields()) {
             if (field.isAnnotationPresent(Column.class)) {
                 Column column = field.getAnnotation(Column.class);
-                if (!column.name().equals("id")) {
+//                if (!column.name().equals("id")) {
+                if (!column.primaryKey()) {
                     if (column.name().isEmpty()) {
                         colName = field.getName();
                     }
@@ -86,12 +90,16 @@ public class QueryGenerator {
                     }
                     result.add(colName);
                 }
+                else {
+                    idName = column.name();
+                }
             }
         }
         StringBuilder stringBuilder = new StringBuilder("SELECT ");
         stringBuilder.append(result)
                 .append(" FROM ").append(tableName)
-                .append(" WHERE id=").append(id).append(";");
+//                .append(" WHERE id=").append(id).append(";");
+                .append(" WHERE ").append(idName+"=").append(id).append(";");
 
         return stringBuilder.toString();
     }

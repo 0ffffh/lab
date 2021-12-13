@@ -42,8 +42,8 @@ public class QueryGeneratorTest {
         String getById = queryGenerator.getById(Person.class, id);
         String exceptedSql = "SELECT firstName, lastName, age FROM PERSON WHERE id=" + id + ";";
 
-//        System.out.println(getById);
-//        System.out.println(exceptedSql);
+        System.out.println(getById);
+        System.out.println(exceptedSql);
 
         assertEquals(exceptedSql, getById);
     }
