@@ -8,9 +8,9 @@ import java.util.Random;
 
 public class FileManagerTest {
 
-    static String Path = "fmTest";
-    static String PathToCopyFolder = "fmTest-COPY";
-    static String PathToMoveFolder = "fmTest-MOVED";
+    static String Path = "src/main/resources/Test";
+    static String PathToCopyFolder = "src/main/resources/fmTest-COPY";
+    static String PathToMoveFolder = "src/main/resources/fmTest-MOVED";
 
 
     @BeforeEach

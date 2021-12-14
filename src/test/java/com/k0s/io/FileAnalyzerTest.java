@@ -3,41 +3,39 @@ package com.k0s.io;
 import com.ginsberg.junit.exit.ExpectSystemExitWithStatus;
 import com.k0s.io.fileanalyzer.FileAnalyzer;
 import com.k0s.io.fileanalyzer.FileAnalyzerLauncher;
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedWriter;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 public class FileAnalyzerTest {
+    static String testFile = "src/main/resources/test.txt";
+    static String emptyTestFile = "src/main/resources/emptyFile.txt";
 
     @BeforeAll
     public static void allocateFile(){
-        File emptyFile = new File("emptyFile.txt");
+        File emptyFile = new File(emptyTestFile);
         try {
             emptyFile.createNewFile();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        try (FileWriter writesToFile = new FileWriter("test.txt")){
+        try (FileWriter writesToFile = new FileWriter(testFile)){
 
             BufferedWriter writer = new BufferedWriter(writesToFile);
-//
-            String string = "89Антошка98, 9Антошка9!\n" +
-                    "Пойдем копать АнТошкаАНТОШКААнтошка картошку!\n" +
-                    "(Антошка), Антошка!\n" +
+
+            String string = "Антошка, Антошка!\n" +
+                    "Пойдем копать картошку!\n" +
+                    "Антошка, Антошка!\n" +
                     "Пойдем копать картошку!\n" +
                     "\n" +
                     "Тили — тили, трали — вали,\n" +
@@ -78,66 +76,80 @@ public class FileAnalyzerTest {
 
     @AfterAll
     static void clean() throws IOException {
-        FileManager.remove("test.txt");
-        FileManager.remove("emptyFile.txt");
+        FileManager.remove(testFile);
+        FileManager.remove(emptyTestFile);
     }
 
 
     @Test
     @DisplayName("Test FileAnalyzerCountWords")
     public void wordCount() throws IOException {
-        FileAnalyzer fileAnalyzer = new FileAnalyzer("test.txt", "Антошка");
-        assertEquals(15, fileAnalyzer.getCountWords());
+        FileAnalyzer fileAnalyzer = new FileAnalyzer(testFile, "Антошка");
+        assertEquals(12, fileAnalyzer.getCountWords());
     }
 
     @Test
     @DisplayName("Test FileAnalyzerCountSentence")
     public void sentenceCount() throws IOException {
-        FileAnalyzer fileAnalyzer = new FileAnalyzer("test.txt", "Антошка");
-        assertEquals(7, fileAnalyzer.getCountSentences());
+        FileAnalyzer fileAnalyzer = new FileAnalyzer(testFile, "Антошка");
+        assertEquals(6, fileAnalyzer.getCountSentences());
     }
 
     @Test
     @DisplayName("Test FileAnalyzerGetList")
     public void sentenceList() throws IOException {
-        FileAnalyzer fileAnalyzer = new FileAnalyzer("test.txt", "Антошка");
-        assertEquals(7, fileAnalyzer.getSentenceList().size());
-        for(String s : fileAnalyzer.getSentenceList()){
-            System.out.println(s);
-        }
+        FileAnalyzer fileAnalyzer = new FileAnalyzer(testFile, "Антошка");
+        assertEquals(6, fileAnalyzer.getSentenceList().size());
     }
 
     @Test
-    @DisplayName("Test method with worked parameters")
+    @DisplayName("Test FileAnalyzer methods")
+    public void diffWordsTest() throws IOException {
+
+        FileAnalyzer fileAnalyzer = new FileAnalyzer();
+
+        assertEquals(6, fileAnalyzer.getSentenceList(testFile, "Антошка").size());
+
+        assertEquals(6, fileAnalyzer.getCountWords(testFile, "Тили" ));
+
+        assertEquals(0, fileAnalyzer.getCountWords(emptyTestFile, "Тили" ));
+
+        assertEquals(12, fileAnalyzer.getCountWords(testFile, "пам" ));
+
+    }
+
+
+    @Test
+    @DisplayName("Test Launcher")
     public void defaultLaunch()
 
     {
-        String[] args = {"test.txt", "Антошка"};
+        String[] args = {testFile, "Антошка"};
         FileAnalyzerLauncher.main(args);
     }
 
     @Test
-    @DisplayName("Test method with non-existent keyword")
+    @DisplayName("Test Launcher with non-existent keyword")
     public void keywordNotFound()
     {
-        String[] args = {"test.txt", "111"};
+        String[] args = {testFile, "111"};
         FileAnalyzerLauncher.main(args);
     }
 
     @Test
-    @DisplayName("Test method with empty file")
+    @DisplayName("Test Launcher with empty file")
     public void emptyFileExit0()
     {
-        String[] args = {"emptyFile.txt", "Антошка"};
+        String[] args = {emptyTestFile, "Антошка"};
         FileAnalyzerLauncher.main(args);
     }
 
     @Test
-    @DisplayName("Test method with different arguments")
+    @DisplayName("Test Launcher with different arguments")
     @ExpectSystemExitWithStatus(-1)
     public void wrongArgsExit1()
     {
-        String[] args = {"test.txt", "kljkl", "dfdf"};
+        String[] args = {testFile, "kljkl", "dfdf"};
         FileAnalyzerLauncher.main(args);
     }
 

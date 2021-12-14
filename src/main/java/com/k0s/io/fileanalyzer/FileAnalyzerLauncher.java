@@ -3,7 +3,6 @@ package com.k0s.io.fileanalyzer;
 import java.io.*;
 
 
-
 public class FileAnalyzerLauncher {
     public static void main(String[] args) {
         if (args == null || args.length != 2 ) {
@@ -20,13 +19,8 @@ public class FileAnalyzerLauncher {
 
     private static void initAnalyzer(String path, String keyword) throws IOException {
 
-            FileAnalyzer fileAnalyzer = new FileAnalyzer(path, keyword);
-            System.out.println("Count words = " + fileAnalyzer.getCountWords());
-            System.out.println("Count sentences = " + fileAnalyzer.getCountSentences());
-            System.out.println("Sentences: ");
-            for (String print : fileAnalyzer.getSentenceList()) {
-                System.out.println(print);
-            }
+        FileAnalyzer fileAnalyzer = new FileAnalyzer(path, keyword);
+        System.out.println(fileAnalyzer);
     }
 }
 
