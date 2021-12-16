@@ -172,11 +172,11 @@ public class FileManagerTest {
         File outFile = new File(PathToCopyFolder);
         FileManager.copy(inFile.getAbsolutePath(), outFile.getAbsolutePath());
 
-        long actualFileCount = FileManager.countFiles(Path);
-        long expectedFileCount = FileManager.countFiles(PathToCopyFolder);
+        int actualFileCount = FileManager.countFiles(Path);
+        int expectedFileCount = FileManager.countFiles(PathToCopyFolder);
 
-        long actualDirCount = FileManager.countDirs(Path);
-        long expectedDirCount = FileManager.countDirs(PathToCopyFolder);
+        int actualDirCount = FileManager.countDirs(Path);
+        int expectedDirCount = FileManager.countDirs(PathToCopyFolder);
 
         long actualDirSize = FileManager.getSize(Path);
         long expectedDirSize = FileManager.getSize(PathToCopyFolder);
@@ -206,9 +206,9 @@ public class FileManagerTest {
 
     @Test
     @DisplayName("Copy to non access folder. Throw IOException")
-    public void copyToNonAccessFolderTest() throws IOException {
+    public void copyToNonAccessFolderTest() {
         File inFile = new File(Path);
-        FileManager.copy(inFile.getAbsolutePath(), getNonAccessFolder());
+        assertThrows(IOException.class, ()-> FileManager.copy(inFile.getAbsolutePath(), getNonAccessFolder()));
     }
 
     @Test
@@ -222,9 +222,9 @@ public class FileManagerTest {
 
     @Test
     @DisplayName("Copy folder to file test. Throw IO Exception")
-    public void copyFolderToFileTest() throws IOException {
-            File inFile = new File(Path);
-            FileManager.copy(inFile.getAbsolutePath(), PathToCopyFolder + "/0.tmp");
+    public void copyFolderToFileTest()  {
+        File inFile = new File(Path);
+        assertThrows(IOException.class, ()-> FileManager.copy(inFile.getAbsolutePath(), PathToCopyFolder + "/0.tmp"));
     }
 
     @Test
@@ -272,9 +272,9 @@ public class FileManagerTest {
 
     @Test
     @DisplayName("Move  to non access folder. Throw IOException")
-    public void moveToNonAccessFolderTest() throws IOException {
-            File inFile = new File(Path);
-            FileManager.move(inFile.getAbsolutePath(), getNonAccessFolder());
+    public void moveToNonAccessFolderTest() {
+        File inFile = new File(Path);
+        assertThrows(IOException.class, ()-> FileManager.move(inFile.getAbsolutePath(), getNonAccessFolder()));
     }
 
     @Test
@@ -289,8 +289,8 @@ public class FileManagerTest {
     @Test
     @DisplayName("Move folder to file. Throw IOException")
     public void moveFolderToFileTest() throws IOException {
-            File inFile = new File(Path);
-            FileManager.move(inFile.getAbsolutePath(), Path + "/0.tmp");
+        File inFile = new File(Path);
+        assertThrows(IOException.class, ()-> FileManager.move(inFile.getAbsolutePath(), Path + "/0.tmp"));
     }
 
     @Test

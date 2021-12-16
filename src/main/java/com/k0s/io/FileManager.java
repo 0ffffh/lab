@@ -116,7 +116,7 @@ public class FileManager {
         return count;
     }
 
-    private static void copyRecursiveFolder(String from, String to) {
+    private static void copyRecursiveFolder(String from, String to) throws IOException {
         File source = new File(from);
         File destination = new File(to);
         destination.mkdir();
@@ -125,34 +125,27 @@ public class FileManager {
                 File destinationFolder = new File(destination.getAbsolutePath(), path.getName());
                 destinationFolder.mkdir();
                 copyRecursiveFolder(path.getAbsolutePath(), destinationFolder.getAbsolutePath());
-            }
+            } else
             if (path.isFile() && path.canRead()) {
                 File destinationFile = new File(destination.getAbsolutePath(), path.getName());
-//                    try {
-//                        destinationFile.createNewFile();
-//                    } catch (IOException e) {
-//                        System.out.println("Can't create file <" + to + "> already exist" + e);
-//                        e.printStackTrace();
-//                    }
                 copyFileUsingBuff(path.getAbsolutePath(), destinationFile.getAbsolutePath());
+            }
+            else {
+                throw new IOException("Can't read/write file or directory" + path);
             }
         }
     }
 
-    private static void copyFileUsingBuff(String from, String to) {
+    private static void copyFileUsingBuff(String from, String to) throws IOException {
         try (BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(from));
-             BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(to))){
+             BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(to))) {
 
             int length;
-            byte[] buff = new byte[4096];
-            while ((length = bufferedInputStream.read(buff)) != -1){
-                bufferedOutputStream.write(buff,0, length);
+            byte[] buff = new byte[8192];
+            while ((length = bufferedInputStream.read(buff)) != -1) {
+                bufferedOutputStream.write(buff, 0, length);
             }
             bufferedOutputStream.flush();
-
-        } catch (IOException e) {
-            System.out.println("IO exception: can't create file");
-            e.printStackTrace();
         }
     }
 
