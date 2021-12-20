@@ -4,7 +4,7 @@ import com.k0s.io.FileManager;
 import org.junit.jupiter.api.*;
 
 import java.io.BufferedWriter;
-import java.io.File;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
@@ -127,7 +127,6 @@ class BufferedInputStreamTest {
 
         testBufferedInputStream.close();
         assertThrows(IOException.class, ()-> testBufferedInputStream.read());
-
     }
 
 
