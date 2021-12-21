@@ -2,7 +2,6 @@ package com.k0s.io.bufferedStream;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 
 
 public class BufferedInputStream extends InputStream {
@@ -39,8 +38,7 @@ public class BufferedInputStream extends InputStream {
     @Override
     public void close() throws IOException {
         target.close();
-        Arrays.fill(buffer, 0);
-        bufferNextByte = 0;
+        this.buffer = null;
         close = true;
     }
 

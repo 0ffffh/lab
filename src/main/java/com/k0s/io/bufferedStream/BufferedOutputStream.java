@@ -7,7 +7,7 @@ import java.util.Arrays;
 public class BufferedOutputStream extends OutputStream {
     private final OutputStream target;
     private static final int BUFFER_SIZE = 8192;
-    private final byte [] buffer;
+    private byte [] buffer;
 
     private int bufferNextByte;
     private boolean close;
@@ -49,8 +49,7 @@ public class BufferedOutputStream extends OutputStream {
     @Override
     public void close() throws IOException {
         target.close();
-        Arrays.fill(buffer, (byte) 0);
-        bufferNextByte = 0;
+        this.buffer = null;
         close = true;
     }
 
@@ -67,7 +66,6 @@ public class BufferedOutputStream extends OutputStream {
 //            for (int i = 0; i < len; i++) {
 //                writeBuffer(b[off+i]);
 //            }
-//             ???????
             flushBuffer();
             target.write(b,off,len);
         }
