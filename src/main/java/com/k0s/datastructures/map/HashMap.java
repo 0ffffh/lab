@@ -249,29 +249,31 @@ public class HashMap <K,V> implements Map<K,V> {
         @SuppressWarnings("unchecked")
         Node<K,V>[] newTable = new Node[newCapacity];
         int count = 0;
-        for (Node<K, V> entry : table) {
-            Node<K, V> node = entry;
-            while (node != null) {
+        for (Node<K, V> node : table) {
+            while (node != null){
                 int index = generateIndex(node.hash, newCapacity);
-                Node<K, V> newEntry = newTable[index];
-
-                if (newEntry == null) {
-                    newTable[index] = node;
+                if (newTable[index] == null){
+                    newTable[index] = new Node<>(node.key, node.value, node.hash);
                     count++;
-                }
-                while (newEntry != null) {
-                    if (newEntry.next != null) {
-                        newEntry = node;
-                        count++;
+                } else {
+                    for(Node<K,V> current = newTable[index]; current != null; current = current.next){
+                        if(current.next == null){
+                            current.next = new Node<>(node.key, node.value, node.hash);
+                            count++;
+                            break;
+                        }
                     }
-                    newEntry = newEntry.next;
                 }
                 node = node.next;
             }
         }
-        this.clear();
-        size = count;
-        table = newTable;
-    }
+        if (size == count){
+            this.clear();
+            size = count;
+            table = newTable;
+        } else {
+            throw new RuntimeException("HashMap resize crash, size = " + size + " size after resize = " + count + " data lost");
+        }
 
+    }
 }
