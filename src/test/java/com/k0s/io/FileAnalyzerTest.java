@@ -12,8 +12,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class FileAnalyzerTest {
@@ -144,21 +143,6 @@ public class FileAnalyzerTest {
         FileAnalyzer.main(args);
     }
 
-    @Test
-    @DisplayName("Test Launcher with different arguments")
-    public void wrongArgsExit1()
-    {
-        String[] args = {testFile, "kljkl", "dfdf"};
-        assertThrows(IllegalArgumentException.class, ()->  FileAnalyzer.main(args));
-    }
-
-    @Test
-    @DisplayName("Test method with NULL file")
-    public void nullArgsExit1()
-
-    {
-        assertThrows(IllegalArgumentException.class, ()-> FileAnalyzer.main(null));
-    }
 
     @Test
     @DisplayName("Test method with non-existent file")
