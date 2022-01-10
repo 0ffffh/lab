@@ -1,8 +1,7 @@
 package com.k0s.io;
 
-import com.ginsberg.junit.exit.ExpectSystemExitWithStatus;
+import com.k0s.io.fileanalyzer.Analyzer;
 import com.k0s.io.fileanalyzer.FileAnalyzer;
-import com.k0s.io.fileanalyzer.FileAnalyzerLauncher;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -14,6 +13,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 public class FileAnalyzerTest {
@@ -84,37 +84,37 @@ public class FileAnalyzerTest {
     @Test
     @DisplayName("Test FileAnalyzerCountWords")
     public void wordCount() throws IOException {
-        FileAnalyzer fileAnalyzer = new FileAnalyzer(testFile, "Антошка");
-        assertEquals(12, fileAnalyzer.getCountWords());
+        Analyzer analyzer = new Analyzer(testFile, "Антошка");
+        assertEquals(12, analyzer.getCountWords());
     }
 
     @Test
     @DisplayName("Test FileAnalyzerCountSentence")
     public void sentenceCount() throws IOException {
-        FileAnalyzer fileAnalyzer = new FileAnalyzer(testFile, "Антошка");
-        assertEquals(6, fileAnalyzer.getCountSentences());
+        Analyzer analyzer = new Analyzer(testFile, "Антошка");
+        assertEquals(6, analyzer.getCountSentences());
     }
 
     @Test
     @DisplayName("Test FileAnalyzerGetList")
     public void sentenceList() throws IOException {
-        FileAnalyzer fileAnalyzer = new FileAnalyzer(testFile, "Антошка");
-        assertEquals(6, fileAnalyzer.getSentenceList().size());
+        Analyzer analyzer = new Analyzer(testFile, "Антошка");
+        assertEquals(6, analyzer.getSentenceList().size());
     }
 
     @Test
     @DisplayName("Test FileAnalyzer methods")
     public void diffWordsTest() throws IOException {
 
-        FileAnalyzer fileAnalyzer = new FileAnalyzer();
+        Analyzer analyzer = new Analyzer();
 
-        assertEquals(6, fileAnalyzer.getSentenceList(testFile, "Антошка").size());
+        assertEquals(6, analyzer.getSentenceList(testFile, "Антошка").size());
 
-        assertEquals(6, fileAnalyzer.getCountWords(testFile, "Тили" ));
+        assertEquals(6, analyzer.getCountWords(testFile, "Тили" ));
 
-        assertEquals(0, fileAnalyzer.getCountWords(emptyTestFile, "Тили" ));
+        assertEquals(0, analyzer.getCountWords(emptyTestFile, "Тили" ));
 
-        assertEquals(12, fileAnalyzer.getCountWords(testFile, "пам" ));
+        assertEquals(12, analyzer.getCountWords(testFile, "пам" ));
 
     }
 
@@ -125,7 +125,7 @@ public class FileAnalyzerTest {
 
     {
         String[] args = {testFile, "Антошка"};
-        FileAnalyzerLauncher.main(args);
+        FileAnalyzer.main(args);
     }
 
     @Test
@@ -133,7 +133,7 @@ public class FileAnalyzerTest {
     public void keywordNotFound()
     {
         String[] args = {testFile, "111"};
-        FileAnalyzerLauncher.main(args);
+        FileAnalyzer.main(args);
     }
 
     @Test
@@ -141,25 +141,23 @@ public class FileAnalyzerTest {
     public void emptyFileExit0()
     {
         String[] args = {emptyTestFile, "Антошка"};
-        FileAnalyzerLauncher.main(args);
+        FileAnalyzer.main(args);
     }
 
     @Test
     @DisplayName("Test Launcher with different arguments")
-    @ExpectSystemExitWithStatus(-1)
     public void wrongArgsExit1()
     {
         String[] args = {testFile, "kljkl", "dfdf"};
-        FileAnalyzerLauncher.main(args);
+        assertThrows(IllegalArgumentException.class, ()->  FileAnalyzer.main(args));
     }
 
     @Test
     @DisplayName("Test method with NULL file")
-    @ExpectSystemExitWithStatus(-1)
     public void nullArgsExit1()
 
     {
-        FileAnalyzerLauncher.main(null);
+        assertThrows(IllegalArgumentException.class, ()-> FileAnalyzer.main(null));
     }
 
     @Test
@@ -167,7 +165,7 @@ public class FileAnalyzerTest {
     public void wrongFilePath()
     {
         String[] args = {"test8908098098.txt", "111"};
-        FileAnalyzerLauncher.main(args);
+        FileAnalyzer.main(args);
     }
 
 

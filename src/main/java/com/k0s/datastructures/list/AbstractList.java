@@ -12,6 +12,7 @@ public abstract class AbstractList<T> implements List<T>{
 
     @Override
     public boolean remove(T value) {
+        @SuppressWarnings("unchecked")
         Iterator<T> iterator = iterator();
         while (iterator.hasNext()) {
             T next = iterator.next();
