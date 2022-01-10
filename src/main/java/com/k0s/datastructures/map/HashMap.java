@@ -110,12 +110,9 @@ public class HashMap <K,V> implements Map<K,V> {
 
     @Override
     public boolean containsValue(V value) {
-        for (Node<K, V> node : table) {
-            while (node != null){
-                if(node.getValue() == value){
-                    return true;
-                }
-                node = node.next;
+        for (Map.Entry<K,V> entry: this) {
+            if (entry.getValue() == value){
+                return true;
             }
         }
         return false;
@@ -124,11 +121,8 @@ public class HashMap <K,V> implements Map<K,V> {
     @Override
     public String toString () {
         StringJoiner result = new StringJoiner(", ", "{", "}");
-        for (Node<K, V> node : table) {
-            while (node != null){
-                result.add(node.getKey() + " = " + node.getValue());
-                node = node.next;
-            }
+        for (Map.Entry<K,V> entry: this) {
+            result.add(entry.getKey() + " = " + entry.getValue());
         }
         return result.toString();
     }
@@ -156,7 +150,6 @@ public class HashMap <K,V> implements Map<K,V> {
                 }
             }
         }
-
 
         @Override
         public boolean hasNext() {
@@ -221,6 +214,11 @@ public class HashMap <K,V> implements Map<K,V> {
         public V getValue() {
             return this.value;
         }
+
+        @Override
+        public void setValue(V value) {
+            this.value = value;
+        }
     }
 
 
@@ -245,26 +243,25 @@ public class HashMap <K,V> implements Map<K,V> {
         return null;
     }
 
-    void resize(int newCapacity) {
+
+    private void resize(int newCapacity) {
         @SuppressWarnings("unchecked")
         Node<K,V>[] newTable = new Node[newCapacity];
         int count = 0;
-        for (Node<K, V> node : table) {
-            while (node != null){
-                int index = generateIndex(node.hash, newCapacity);
-                if (newTable[index] == null){
-                    newTable[index] = new Node<>(node.key, node.value, node.hash);
-                    count++;
-                } else {
-                    for(Node<K,V> current = newTable[index]; current != null; current = current.next){
-                        if(current.next == null){
-                            current.next = new Node<>(node.key, node.value, node.hash);
-                            count++;
-                            break;
-                        }
+        for (Map.Entry<K,V> entry: this) {
+            int hash = generateHash(entry.getKey());
+            int index = generateIndex(hash, newCapacity);
+            if (newTable[index] == null){
+                newTable[index] = new Node<>(entry.getKey(), entry.getValue(), hash);
+                count++;
+            } else {
+                for(Node<K,V> current = newTable[index]; current != null; current = current.next){
+                    if(current.next == null){
+                        current.next = new Node<>(entry.getKey(), entry.getValue(), hash);
+                        count++;
+                        break;
                     }
                 }
-                node = node.next;
             }
         }
         if (size == count){

@@ -16,7 +16,6 @@ public class Client {
             bufferedOut.flush();
 
             bufferedOut.write(message.getBytes());
-//            bufferedOut.flush();
             receivedBytes = bufferedIn.read(buffer);
             System.out.println(new String(buffer,0,receivedBytes));
 
@@ -29,8 +28,7 @@ public class Client {
     public void sendFile(String path){
         try (Socket socket = new Socket("localhost", 3000);
              BufferedOutputStream output = new BufferedOutputStream(socket.getOutputStream());
-             OutputStream os = socket.getOutputStream();
-             DataOutputStream ds = new DataOutputStream(socket.getOutputStream());){
+             DataOutputStream ds = new DataOutputStream(socket.getOutputStream())){
 
             output.write(1);
             output.flush();
@@ -39,7 +37,7 @@ public class Client {
             ds.writeUTF(path);
             ds.writeLong(file.length());
 
-            try (BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(path));) {
+            try (BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(path))) {
                 int length;
                 byte[] buff = new byte[8192];
                 while ((length = bufferedInputStream.read(buff)) != -1) {

@@ -4,7 +4,6 @@ import java.util.Iterator;
 
 public interface Map<K,V> extends Iterable<Map.Entry<K,V>>{
 
-
     int size();
 
     boolean isEmpty();
@@ -22,6 +21,7 @@ public interface Map<K,V> extends Iterable<Map.Entry<K,V>>{
     boolean containsValue(V value);
 
 
+    @SuppressWarnings("unchecked")
     Iterator iterator();
 
     interface Entry<K,V> {
@@ -29,6 +29,8 @@ public interface Map<K,V> extends Iterable<Map.Entry<K,V>>{
         K getKey();
 
         V getValue();
+
+        void setValue(V value);
     }
 
 }

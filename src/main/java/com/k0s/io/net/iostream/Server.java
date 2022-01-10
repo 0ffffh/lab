@@ -17,13 +17,17 @@ public class Server {
         }
     }
 
+    public void stop(){
+        isOpen = false;
+    }
+
     public void listen()  {
         while (isOpen){
 
             try (Socket socket = serverSocket.accept();
                  BufferedInputStream bufferedIn = new BufferedInputStream(socket.getInputStream());
                  BufferedOutputStream bufferedOut = new BufferedOutputStream(socket.getOutputStream());
-                 DataInputStream di = new DataInputStream(socket.getInputStream());){
+                 DataInputStream di = new DataInputStream(socket.getInputStream())){
 
                 int inType = bufferedIn.read();
 
@@ -69,6 +73,8 @@ public class Server {
             return file.length() == fileSize;
         }
     }
+
+
 
 
     public static void main(String[] args) {
