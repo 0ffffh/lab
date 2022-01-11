@@ -7,7 +7,7 @@ public class FileAnalyzer {
     public static void main(String[] args) {
         if (args == null || args.length != 2 ) {
             System.out.println("Usage: FileAnalyzer <path to file> <keyword>");
-            return;
+            System.exit(-1);
         }
         try {
             initAnalyzer(args[0], args[1]);

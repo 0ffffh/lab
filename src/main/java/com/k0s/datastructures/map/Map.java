@@ -20,9 +20,7 @@ public interface Map<K,V> extends Iterable<Map.Entry<K,V>>{
 
     boolean containsValue(V value);
 
-
-    @SuppressWarnings("unchecked")
-    Iterator iterator();
+    Iterator<Entry<K,V>> iterator();
 
     interface Entry<K,V> {
 

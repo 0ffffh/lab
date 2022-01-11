@@ -119,6 +119,11 @@ public class HashMap <K,V> implements Map<K,V> {
     }
 
     @Override
+    public Iterator<Entry<K,V>> iterator() {
+        return new  MapIterator();
+    }
+
+    @Override
     public String toString () {
         StringJoiner result = new StringJoiner(", ", "{", "}");
         for (Map.Entry<K,V> entry: this) {
@@ -127,14 +132,61 @@ public class HashMap <K,V> implements Map<K,V> {
         return result.toString();
     }
 
-    @Override
-    public Iterator<Entry<K,V>> iterator() {
-        return new  MapIterator();
+
+
+    private int generateHash(K key){
+        return (key == null) ? 0 : key.hashCode();
+    }
+
+    private int generateIndex(int hash, int length){
+        return Math.abs(hash%length);
+    }
+
+    private Node<K, V> getNode(K key) {
+        if (size == 0) {
+            return null;
+        }
+        int hash = generateHash(key);
+        for(Node<K,V> current = table[generateIndex(hash, table.length)]; current != null; current = current.next){
+            if(current.hash == hash && Objects.equals(current.key,key)){
+                return current;
+            }
+        }
+        return null;
+    }
+
+    private void resize(int newCapacity) {
+        @SuppressWarnings("unchecked")
+        Node<K,V>[] newTable = new Node[newCapacity];
+        int count = 0;
+        for (Map.Entry<K,V> entry: this) {
+            int hash = generateHash(entry.getKey());
+            int index = generateIndex(hash, newCapacity);
+            if (newTable[index] == null){
+                newTable[index] = new Node<>(entry.getKey(), entry.getValue(), hash);
+                count++;
+            } else {
+                for(Node<K,V> current = newTable[index]; current != null; current = current.next){
+                    if(current.next == null){
+                        current.next = new Node<>(entry.getKey(), entry.getValue(), hash);
+                        count++;
+                        break;
+                    }
+                }
+            }
+        }
+        if (size == count){
+            this.clear();
+            size = count;
+            table = newTable;
+        } else {
+            throw new RuntimeException("HashMap resize crash, size = " + size + " size after resize = " + count + " data lost");
+        }
+
     }
 
 
     private  class MapIterator implements Iterator<Entry<K, V>> {
-
         Node<K,V> current;
         Node<K,V> next;
         int index;
@@ -154,7 +206,6 @@ public class HashMap <K,V> implements Map<K,V> {
         @Override
         public boolean hasNext() {
             return next != null;
-
         }
 
         @Override
@@ -165,7 +216,6 @@ public class HashMap <K,V> implements Map<K,V> {
             if(iteratorSize != size){
                 throw new ConcurrentModificationException("HashMap has been modified outside of the iterator");
             }
-
             current = next;
             next = current.next;
             while(next == null && index<table.length){
@@ -198,7 +248,6 @@ public class HashMap <K,V> implements Map<K,V> {
         private Node<K,V> next;
         private final int hash;
 
-
         Node(K key, V value, int hash) {
             this.key = key;
             this.value = value;
@@ -219,58 +268,11 @@ public class HashMap <K,V> implements Map<K,V> {
         public void setValue(V value) {
             this.value = value;
         }
-    }
 
-
-    private int generateHash(K key){
-        return (key == null) ? 0 : key.hashCode();
-    }
-    private int generateIndex(int hash, int length){
-        return Math.abs(hash%length);
-    }
-
-
-    private Node<K, V> getNode(K key) {
-        if (size == 0) {
-            return null;
+        @Override
+        public String toString () {
+            return  key + " = " + value;
         }
-        int hash = generateHash(key);
-        for(Node<K,V> current = table[generateIndex(hash, table.length)]; current != null; current = current.next){
-            if(current.hash == hash && Objects.equals(current.key,key)){
-                return current;
-            }
-        }
-        return null;
     }
 
-
-    private void resize(int newCapacity) {
-        @SuppressWarnings("unchecked")
-        Node<K,V>[] newTable = new Node[newCapacity];
-        int count = 0;
-        for (Map.Entry<K,V> entry: this) {
-            int hash = generateHash(entry.getKey());
-            int index = generateIndex(hash, newCapacity);
-            if (newTable[index] == null){
-                newTable[index] = new Node<>(entry.getKey(), entry.getValue(), hash);
-                count++;
-            } else {
-                for(Node<K,V> current = newTable[index]; current != null; current = current.next){
-                    if(current.next == null){
-                        current.next = new Node<>(entry.getKey(), entry.getValue(), hash);
-                        count++;
-                        break;
-                    }
-                }
-            }
-        }
-        if (size == count){
-            this.clear();
-            size = count;
-            table = newTable;
-        } else {
-            throw new RuntimeException("HashMap resize crash, size = " + size + " size after resize = " + count + " data lost");
-        }
-
-    }
 }

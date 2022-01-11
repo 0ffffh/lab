@@ -2,7 +2,7 @@ package com.k0s.io.bufferedStream;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Arrays;
+
 
 public class BufferedOutputStream extends OutputStream {
     private final OutputStream target;
@@ -43,20 +43,25 @@ public class BufferedOutputStream extends OutputStream {
     @Override
     public void flush() throws IOException {
         isOpen();
-        this.flushBuffer();
+        if (bufferNextByte>0) {
+            target.write(buffer,0,bufferNextByte);
+        }
+        bufferNextByte = 0;
     }
 
     @Override
     public void close() throws IOException {
-        target.close();
-        this.buffer = null;
-        close = true;
+        try (target){
+            flush();
+            this.buffer = null;
+            close = true;
+        }
     }
 
     private void writeBuffer(byte[] b, int off, int len) throws IOException {
         checkArgs(b,off,len);
         if(bufferNextByte>=buffer.length){
-            flushBuffer();
+            flush();
         }
         if(len<=buffer.length-bufferNextByte){
             System.arraycopy(b,off,buffer,bufferNextByte,len);
@@ -66,7 +71,7 @@ public class BufferedOutputStream extends OutputStream {
 //            for (int i = 0; i < len; i++) {
 //                writeBuffer(b[off+i]);
 //            }
-            flushBuffer();
+            flush();
             target.write(b,off,len);
         }
     }
@@ -74,16 +79,9 @@ public class BufferedOutputStream extends OutputStream {
 
     private void writeBuffer(int value) throws IOException {
         if (bufferNextByte >= buffer.length) {
-            flushBuffer();
+            flush();
         }
         buffer[bufferNextByte++] = (byte)value;
-    }
-
-    private void flushBuffer() throws IOException {
-        if (bufferNextByte>0)
-        target.write(buffer,0,bufferNextByte);
-        bufferNextByte = 0;
-        Arrays.fill(buffer,(byte)0);
     }
 
 

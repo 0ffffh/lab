@@ -37,7 +37,7 @@ class BufferedOutputStreamTest {
         java.io.BufferedInputStream defaultInput = new java.io.BufferedInputStream(new java.io.FileInputStream("file.txt"));
         java.io.BufferedInputStream testInput = new java.io.BufferedInputStream(new java.io.FileInputStream("file1.txt"));
 
-        int expected =0;
+        int expected;
         while ((expected = defaultInput.read()) !=-1){
             assertEquals(expected, testInput.read());
         }
@@ -71,7 +71,7 @@ class BufferedOutputStreamTest {
         java.io.BufferedInputStream defaultInput = new java.io.BufferedInputStream(new java.io.FileInputStream("file.txt"));
         java.io.BufferedInputStream testInput = new java.io.BufferedInputStream(new java.io.FileInputStream("file1.txt"));
 
-        int expected =0;
+        int expected;
         while ((expected = defaultInput.read()) !=-1){
             assertEquals(expected, testInput.read());
         }
@@ -105,7 +105,7 @@ class BufferedOutputStreamTest {
         java.io.BufferedInputStream defaultInput = new java.io.BufferedInputStream(new java.io.FileInputStream("file.txt"));
         java.io.BufferedInputStream testInput = new java.io.BufferedInputStream(new java.io.FileInputStream("file1.txt"));
 
-        int expected =0;
+        int expected;
         while ((expected = defaultInput.read()) !=-1){
             assertEquals(expected, testInput.read());
         }
